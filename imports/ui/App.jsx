@@ -1,44 +1,29 @@
 import React, {useState} from 'react';
-import {Login} from "./Login";
-import {useTracker} from 'meteor/react-meteor-data';
-import {SignUp} from "./SignUp";
+import {LoginOrSignUp} from "./LoginOrSignUp";
 import {Chat} from "./Chat";
+import {useTracker} from 'meteor/react-meteor-data';
 
 export const App = () => {
 
-    const [mode, setMode] = useState("login")
-
-
     const loggedIn = useTracker(() => Meteor.userId())
 
-    const onLogin = (e) => {
-        e.preventDefault();
-        setMode("login")
+    if (!loggedIn) {
+        return <LoginOrSignUp />
     }
 
-    const onSignup = (e) => {
+    const handleLogout = (e) => {
         e.preventDefault();
-        setMode("signup")
-    }
-
-    const onLogout = (e) => {
-        e.preventDefault();
-        console.log('ok')
         Meteor.logout();
     }
 
-    const renderContent = () => {
-        if (!Meteor.userId()) {
-            if (mode === 'login') {
-                return <Login />
-            }
-            return <SignUp />
-        }
-
-        return <Chat />
-    }
-
     return (
+        <div className="container-fluid h-100">
+            <div className="row justify-content-end h-25">
+                <div className="col-12">
+                    <a href="#" onClick={handleLogout}>Logout</a>
+                </div>
+            </div>
             <Chat />
+        </div>
     )
 }

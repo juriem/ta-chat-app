@@ -5,11 +5,12 @@ Meteor.methods({
             Accounts.createUser({
                 username: username,
                 email: email,
-                password: password
+                password: password,
             })
         },
         'user.login'({username, password}) {
-            Meteor.loginWithPassword(username, password)
+            Meteor.loginWithPassword(username, password);
+            return true;
         },
         'user.logout'() {
             Meteor.logout()

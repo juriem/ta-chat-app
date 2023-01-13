@@ -2,6 +2,8 @@ import React, {memo} from "react";
 
 export const Chat = () => {
 
+
+
     const contacts = [
         {
             status: 'online',
@@ -166,6 +168,9 @@ export const Chat = () => {
 
     return (
         <div className="container-fluid h-100">
+
+
+
             <div className="row justify-content-center h-100">
                 <div className="col-md-4 col-xs-3 chat">
                     <div className="card mb-sm-3 mb-md-0">
