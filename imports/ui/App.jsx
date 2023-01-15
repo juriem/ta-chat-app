@@ -11,8 +11,11 @@ export const App = () => {
         return <LoginOrSignUp />
     }
 
+    Meteor.call('users.setOnline', {userId: Meteor.userId()})
+
     const handleLogout = (e) => {
         e.preventDefault();
+        Meteor.call('users.setOffline', {userId: Meteor.userId()});
         Meteor.logout();
     }
 

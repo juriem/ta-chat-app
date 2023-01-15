@@ -1,21 +1,12 @@
 import React, {memo} from "react";
+import {useFind, useSubscribe} from "meteor/react-meteor-data";
+import {ContactsCollection} from "../api/collections";
 
 export const Chat = () => {
-
-
-
-    const contacts = [
-        {
-            status: 'online',
-            username: 'Khalid',
-            lastSeen: 'is online'
-        },
-        {
-            status: 'offline',
-            username: 'Taherah Big',
-            lastSeen: 'left 7 min ago'
-        }
-    ]
+    const isLoadingContacts = useSubscribe('contacts');
+    const contacts = useFind(() => {
+        return ContactsCollection.find({})
+    })
 
     const messages = [
         {
@@ -122,9 +113,9 @@ export const Chat = () => {
     ]
 
     const ContactItem = memo(
-        ({status, username, lastSeen}) => {
-            const activeClassName = status === 'online' ? 'active' : null;
-            const iconClass = "online-icon" + (status === 'online' ? '' : ' offline');
+        ({active, username, lastSeen}) => {
+            const activeClassName = active  ? 'active' : null;
+            const iconClass = "online-icon" + (active ? '' : ' offline');
             return <li className={activeClassName}>
                 <div className="d-flex bd-highlight">
                     <div className="img-cont">
@@ -168,9 +159,6 @@ export const Chat = () => {
 
     return (
         <div className="container-fluid h-100">
-
-
-
             <div className="row justify-content-center h-100">
                 <div className="col-md-4 col-xs-3 chat">
                     <div className="card mb-sm-3 mb-md-0">
