@@ -7,4 +7,8 @@ Meteor.startup(() => {
     Meteor.publish('contacts', function() {
         return ContactsCollection.find({userId: {$ne: Meteor.userId()}});
     })
+
+    Meteor.publish('messages', function () {
+        return ChatCollection.find({});
+    })
 });

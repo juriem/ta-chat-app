@@ -1,6 +1,6 @@
-import React, {memo} from "react";
+import React, {memo, useState} from "react";
 import {useFind, useSubscribe} from "meteor/react-meteor-data";
-import {ContactsCollection} from "../api/collections";
+import {ChatCollection, ContactsCollection} from "../api/collections";
 
 export const Chat = () => {
     const isLoadingContacts = useSubscribe('contacts');
@@ -8,109 +8,25 @@ export const Chat = () => {
         return ContactsCollection.find({})
     })
 
-    const messages = [
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
-        {
-            senderId: '@',
-            message: 'Hi, how are you samim?',
-            date: '8:40 AM, Today'
-        },
-        {
-            senderId: '',
-            message: 'Hi Khalid i am good tnx how about you?',
-            date: '8:55 AM, Today'
-        },
+    const isLoadingChat = useSubscribe('messages');
+    const messages = useFind(() => {
+        return ChatCollection.find({})
+    })
 
-    ]
+    const [message, setMessage] = useState("");
+
+    const sendMessage = (e) => {
+        console.log('Send message: ', message, Meteor.userId());
+        Meteor.call('chat.sendMessage', {
+            userId: Meteor.userId(),
+            message: message
+        }, (error) => {
+            if (!error) {
+                setMessage("");
+            }
+        })
+
+    }
 
     const ContactItem = memo(
         ({active, username, lastSeen}) => {
@@ -136,9 +52,9 @@ export const Chat = () => {
 
     const Message = memo(({senderId, message, date}) => {
 
-        const entryDivClass = senderId === ''  ? 'd-flex justify-content-end mb-4' : 'd-flex justify-content-start mb-4';
-        const messageContainerClass = senderId === '' ? 'msg-container-send' : 'msg-container';
-        const messageTimeClass = senderId === '' ? 'msg-time-send' : 'msg-time';
+        const entryDivClass = senderId === Meteor.userId()  ? 'd-flex justify-content-end mb-4' : 'd-flex justify-content-start mb-4';
+        const messageContainerClass = senderId === Meteor.userId() ? 'msg-container-send' : 'msg-container';
+        const messageTimeClass = senderId === Meteor.userId() ? 'msg-time-send' : 'msg-time';
 
         return (
             <div className={entryDivClass}>
@@ -182,10 +98,16 @@ export const Chat = () => {
                         </div>
                         <div className="card-footer">
                             <div className="input-group">
-                                <textarea name="" className="form-control type-msg"
+                                <textarea
+                                    name=""
+                                    className="form-control type-msg"
+                                    onChange={e => setMessage(e.target.value)}
+                                    value={message}
                                           placeholder="Type your message..."></textarea>
                                 <div className="input-group-append">
-                                    <span className="input-group-text send-btn"><i
+                                    <span
+                                        className="input-group-text send-btn"
+                                          onClick={sendMessage}><i
                                         className="fas fa-location-arrow"></i></span>
                                 </div>
                             </div>

@@ -1,6 +1,5 @@
 import {Meteor} from "meteor/meteor";
-import {ContactsCollection} from "./collections";
-
+import {ChatCollection, ContactsCollection} from "./collections";
 
 Meteor.methods({
         'user.register'({username, email, password}) {
@@ -23,6 +22,13 @@ Meteor.methods({
                 {userId: userId},
                 {userId: userId, username: user[0].username, active: false, lastSeen: new Date()}
             );
+        },
+        'chat.sendMessage'({userId, message}) {
+            ChatCollection.insert({
+                senderId: userId,
+                message: message,
+                sentAt: new Date()
+            })
         }
     }
 )
